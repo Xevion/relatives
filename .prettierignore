@@ -1,0 +1,10 @@
+node_modules
+dist
+.svelte-kit
+build
+.output
+coverage
+bun.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
