@@ -489,7 +489,7 @@ export const timeMeasurables: Measurable[] = [
 
   // Days
   {
-    id: 'earth-rotation',
+    id: 'earth-rotation-period',
     name: 'Earth rotation',
     description: 'Time for Earth to complete one rotation (sidereal day)',
     dimension: 'time',
@@ -758,7 +758,7 @@ export const timeMeasurables: Measurable[] = [
   {
     id: 'halleys-comet',
     name: "Halley's Comet orbit",
-    description: 'Time between appearances of Halley\'s Comet',
+    description: "Time between appearances of Halley's Comet",
     dimension: 'time',
     value: 76,
     unit: 'year',

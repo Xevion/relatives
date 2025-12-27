@@ -348,7 +348,7 @@ export const temperatureMeasurables: Measurable[] = [
   {
     id: 'earth-mantle-temperature',
     name: "Earth's mantle temperature",
-    description: 'Average temperature of Earth\'s mantle',
+    description: "Average temperature of Earth's mantle",
     dimension: 'temperature',
     value: 1350,
     unit: 'celsius',
@@ -411,7 +411,7 @@ export const temperatureMeasurables: Measurable[] = [
   {
     id: 'sun-surface-temperature',
     name: 'Sun surface temperature',
-    description: 'Temperature of the Sun\'s photosphere',
+    description: "Temperature of the Sun's photosphere",
     dimension: 'temperature',
     value: 5778,
     unit: 'kelvin',
@@ -435,7 +435,7 @@ export const temperatureMeasurables: Measurable[] = [
 
   // Extreme high temperatures
   {
-    id: 'lightning-bolt',
+    id: 'lightning-bolt-temperature',
     name: 'Lightning bolt temperature',
     description: 'Temperature of air around a lightning flash',
     dimension: 'temperature',

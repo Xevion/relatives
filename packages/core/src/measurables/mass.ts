@@ -110,7 +110,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 5,
   },
   {
-    id: 'grain-of-rice',
+    id: 'grain-of-rice-mass',
     name: 'Grain of rice mass',
     description: 'Mass of a single grain of rice',
     dimension: 'mass',
@@ -223,7 +223,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'us-dime',
+    id: 'us-dime-mass',
     name: 'US dime mass',
     description: 'Mass of a US ten-cent coin',
     dimension: 'mass',
@@ -234,7 +234,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'us-penny',
+    id: 'us-penny-mass',
     name: 'US penny mass',
     description: 'Mass of a US one-cent coin',
     dimension: 'mass',
@@ -278,7 +278,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'us-quarter',
+    id: 'us-quarter-mass',
     name: 'US quarter mass',
     description: 'Mass of a US twenty-five cent coin',
     dimension: 'mass',
@@ -311,7 +311,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'aa-battery',
+    id: 'aa-battery-mass',
     name: 'AA battery mass',
     description: 'Mass of an alkaline AA battery',
     dimension: 'mass',
@@ -344,7 +344,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'snickers-bar',
+    id: 'snickers-bar-mass',
     name: 'Snickers bar mass',
     description: 'Mass of a standard Snickers chocolate bar',
     dimension: 'mass',
@@ -598,7 +598,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'human-brain',
+    id: 'human-brain-mass',
     name: 'Human brain mass',
     description: 'Average mass of an adult human brain',
     dimension: 'mass',
@@ -611,7 +611,7 @@ export const massMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'human-heart',
+    id: 'human-heart-mass',
     name: 'Human heart mass',
     description: 'Average mass of an adult human heart',
     dimension: 'mass',

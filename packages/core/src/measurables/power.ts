@@ -16,7 +16,7 @@ export const powerMeasurables: Measurable[] = [
 
   // Human body - resting
   {
-    id: 'human-brain',
+    id: 'human-brain-power',
     name: 'Human brain',
     description: 'Metabolic power consumption of the human brain at rest',
     dimension: 'power',
@@ -178,7 +178,7 @@ export const powerMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'refrigerator',
+    id: 'refrigerator-power',
     name: 'Refrigerator',
     description: 'Average household refrigerator when running',
     dimension: 'power',
@@ -191,7 +191,7 @@ export const powerMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'washing-machine',
+    id: 'washing-machine-power',
     name: 'Washing machine',
     description: 'Typical washing machine during operation',
     dimension: 'power',
@@ -217,7 +217,7 @@ export const powerMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'microwave-oven',
+    id: 'microwave-oven-power',
     name: 'Microwave oven',
     description: 'Standard household microwave oven',
     dimension: 'power',
@@ -293,7 +293,7 @@ export const powerMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'clothes-dryer',
+    id: 'clothes-dryer-power',
     name: 'Clothes dryer',
     description: 'Electric clothes dryer during operation',
     dimension: 'power',
@@ -524,7 +524,7 @@ export const powerMeasurables: Measurable[] = [
 
   // Power generation - Renewable
   {
-    id: 'solar-panel-residential',
+    id: 'solar-panel-residential-power',
     name: 'Residential solar panel',
     description: 'Power output of a single residential solar panel',
     dimension: 'power',
@@ -657,7 +657,7 @@ export const powerMeasurables: Measurable[] = [
   {
     id: 'three-gorges-dam',
     name: 'Three Gorges Dam',
-    description: 'Total generating capacity of the world\'s largest power station',
+    description: "Total generating capacity of the world's largest power station",
     dimension: 'power',
     value: 22500,
     unit: 'megawatt',
@@ -668,7 +668,7 @@ export const powerMeasurables: Measurable[] = [
 
   // Natural phenomena
   {
-    id: 'lightning-bolt',
+    id: 'lightning-bolt-power',
     name: 'Lightning bolt',
     description: 'Peak power during a lightning strike',
     dimension: 'power',

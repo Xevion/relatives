@@ -112,7 +112,7 @@ export const energyMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'snickers-bar',
+    id: 'snickers-bar-energy',
     name: 'Snickers bar',
     description: 'Energy content of a standard 1.86 oz Snickers bar',
     dimension: 'energy',
@@ -125,7 +125,7 @@ export const energyMeasurables: Measurable[] = [
   {
     id: 'big-mac',
     name: 'Big Mac',
-    description: 'Energy content of a McDonald\'s Big Mac',
+    description: "Energy content of a McDonald's Big Mac",
     dimension: 'energy',
     value: 550,
     unit: 'kilocalorie',
@@ -177,7 +177,7 @@ export const energyMeasurables: Measurable[] = [
 
   // Batteries - small
   {
-    id: 'aa-battery',
+    id: 'aa-battery-energy',
     name: 'AA battery',
     description: 'Energy stored in a typical alkaline AA battery',
     dimension: 'energy',
@@ -357,7 +357,7 @@ export const energyMeasurables: Measurable[] = [
 
   // Natural phenomena
   {
-    id: 'lightning-bolt',
+    id: 'lightning-bolt-energy',
     name: 'Lightning bolt',
     description: 'Energy in a typical lightning strike',
     dimension: 'energy',

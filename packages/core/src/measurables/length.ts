@@ -112,7 +112,7 @@ export const lengthMeasurables: Measurable[] = [
     accuracy: 6,
   },
   {
-    id: 'red-blood-cell',
+    id: 'red-blood-cell-diameter',
     name: 'Red blood cell diameter',
     description: 'Diameter of a human red blood cell',
     dimension: 'length',
@@ -201,7 +201,7 @@ export const lengthMeasurables: Measurable[] = [
   {
     id: 'bee-hummingbird',
     name: 'Bee hummingbird length',
-    description: 'Length of the world\'s smallest bird',
+    description: "Length of the world's smallest bird",
     dimension: 'length',
     value: 5.5,
     unit: 'centimeter',
@@ -568,7 +568,7 @@ export const lengthMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'empire-state-building',
+    id: 'empire-state-building-height',
     name: 'Empire State Building height',
     description: 'Height to roof (without antenna)',
     dimension: 'length',
@@ -660,7 +660,7 @@ export const lengthMeasurables: Measurable[] = [
   {
     id: 'nile-river-length',
     name: 'Nile River length',
-    description: 'Length of the Nile, one of the world\'s longest rivers',
+    description: "Length of the Nile, one of the world's longest rivers",
     dimension: 'length',
     value: 6650,
     unit: 'kilometer',

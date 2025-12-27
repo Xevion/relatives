@@ -3,7 +3,7 @@ import type { Measurable } from '@/types';
 export const frequencyMeasurables: Measurable[] = [
   // Sub-Hertz / Extremely Low Frequency
   {
-    id: 'earth-rotation',
+    id: 'earth-rotation-frequency',
     name: 'Earth rotation frequency',
     description: 'Frequency of Earth rotating once per day',
     dimension: 'frequency',
@@ -371,7 +371,7 @@ export const frequencyMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'microwave-oven',
+    id: 'microwave-oven-frequency',
     name: 'Microwave oven magnetron',
     description: 'Operating frequency of household microwave ovens',
     dimension: 'frequency',
@@ -410,7 +410,7 @@ export const frequencyMeasurables: Measurable[] = [
     name: 'Cesium atomic clock',
     description: 'Hyperfine transition frequency defining the second',
     dimension: 'frequency',
-    value: 9.192631770,
+    value: 9.19263177,
     unit: 'gigahertz',
     tags: ['physics', 'timekeeping', 'universal'],
     relatability: 6,

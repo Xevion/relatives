@@ -18,6 +18,8 @@ export const data: Dimension = {
     { id: 'gigabyte', symbol: 'GB', toBase: 1_000_000_000 },
     { id: 'terabyte', symbol: 'TB', toBase: 1_000_000_000_000 },
     { id: 'petabyte', symbol: 'PB', toBase: 1_000_000_000_000_000 },
+    { id: 'exabyte', symbol: 'EB', toBase: 1e18 },
+    { id: 'zettabyte', symbol: 'ZB', toBase: 1e21 },
 
     // Binary (IEC standard)
     { id: 'kibibyte', symbol: 'KiB', toBase: 1_024 },

@@ -10,6 +10,7 @@ export const area: Dimension = {
     { id: 'square-kilometer', symbol: 'km²', toBase: 1_000_000 },
     { id: 'square-centimeter', symbol: 'cm²', toBase: 0.0001 },
     { id: 'square-millimeter', symbol: 'mm²', toBase: 0.000_001 },
+    { id: 'square-micrometer', symbol: 'µm²', toBase: 1e-12 },
     { id: 'hectare', symbol: 'ha', toBase: 10_000 },
 
     // Imperial

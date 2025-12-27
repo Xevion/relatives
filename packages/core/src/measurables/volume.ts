@@ -3,7 +3,7 @@ import type { Measurable } from '@/types';
 export const volumeMeasurables: Measurable[] = [
   // Microscopic
   {
-    id: 'red-blood-cell',
+    id: 'red-blood-cell-volume',
     name: 'Red blood cell',
     description: 'Volume of a single red blood cell',
     dimension: 'volume',
@@ -29,7 +29,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'grain-of-rice',
+    id: 'grain-of-rice-volume',
     name: 'Grain of rice',
     description: 'Volume of a single grain of rice',
     dimension: 'volume',
@@ -306,7 +306,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'human-brain',
+    id: 'human-brain-volume',
     name: 'Human brain',
     description: 'Average adult human brain volume',
     dimension: 'volume',
@@ -319,7 +319,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'human-heart',
+    id: 'human-heart-volume',
     name: 'Human heart',
     description: 'Total blood capacity of human heart chambers',
     dimension: 'volume',
@@ -716,7 +716,7 @@ export const volumeMeasurables: Measurable[] = [
 
   // Appliances
   {
-    id: 'washing-machine',
+    id: 'washing-machine-capacity',
     name: 'Washing machine drum',
     description: 'Capacity of a standard washing machine',
     dimension: 'volume',
@@ -729,7 +729,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'clothes-dryer',
+    id: 'clothes-dryer-capacity',
     name: 'Clothes dryer drum',
     description: 'Capacity of a standard clothes dryer',
     dimension: 'volume',
@@ -742,7 +742,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'refrigerator',
+    id: 'refrigerator-capacity',
     name: 'Refrigerator',
     description: 'Total capacity of a standard refrigerator',
     dimension: 'volume',
@@ -1064,7 +1064,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'empire-state-building',
+    id: 'empire-state-building-volume',
     name: 'Empire State Building',
     description: 'Interior volume of iconic skyscraper',
     dimension: 'volume',
@@ -1103,7 +1103,7 @@ export const volumeMeasurables: Measurable[] = [
 
   // Geographic
   {
-    id: 'lake-tahoe',
+    id: 'lake-tahoe-volume',
     name: 'Lake Tahoe volume',
     description: 'Volume of water in Lake Tahoe',
     dimension: 'volume',
@@ -1114,7 +1114,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'caspian-sea',
+    id: 'caspian-sea-volume',
     name: 'Caspian Sea volume',
     description: 'Largest inland body of water by volume',
     dimension: 'volume',
@@ -1147,7 +1147,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'lake-superior',
+    id: 'lake-superior-volume',
     name: 'Lake Superior volume',
     description: 'Volume of the largest Great Lake',
     dimension: 'volume',
@@ -1169,7 +1169,7 @@ export const volumeMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'mediterranean-sea',
+    id: 'mediterranean-sea-volume',
     name: 'Mediterranean Sea volume',
     description: 'Total volume of the Mediterranean Sea',
     dimension: 'volume',

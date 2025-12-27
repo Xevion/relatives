@@ -29,7 +29,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 6,
   },
   {
-    id: 'red-blood-cell',
+    id: 'red-blood-cell-area',
     name: 'Red blood cell',
     description: 'Surface area of a human red blood cell',
     dimension: 'area',
@@ -81,7 +81,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'us-penny',
+    id: 'us-penny-area',
     name: 'US penny',
     description: 'Area of a US one-cent coin',
     dimension: 'area',
@@ -92,7 +92,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'us-dime',
+    id: 'us-dime-area',
     name: 'US dime',
     description: 'Area of a US ten-cent coin',
     dimension: 'area',
@@ -116,7 +116,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'us-quarter',
+    id: 'us-quarter-area',
     name: 'US quarter',
     description: 'Area of a US twenty-five cent coin',
     dimension: 'area',
@@ -431,7 +431,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 7,
   },
   {
-    id: 'solar-panel-residential',
+    id: 'solar-panel-residential-area',
     name: 'Residential solar panel',
     description: 'Area of a typical residential solar panel',
     dimension: 'area',
@@ -899,7 +899,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 9,
   },
   {
-    id: 'empire-state-building',
+    id: 'empire-state-building-floor-area',
     name: 'Empire State Building',
     description: 'Total floor area of the Empire State Building',
     dimension: 'area',
@@ -1726,7 +1726,7 @@ export const areaMeasurables: Measurable[] = [
 
   // Lakes
   {
-    id: 'lake-tahoe',
+    id: 'lake-tahoe-area',
     name: 'Lake Tahoe',
     description: 'Surface area of Lake Tahoe',
     dimension: 'area',
@@ -1759,7 +1759,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'lake-superior',
+    id: 'lake-superior-area',
     name: 'Lake Superior',
     description: 'Surface area of Lake Superior',
     dimension: 'area',
@@ -1770,7 +1770,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'caspian-sea',
+    id: 'caspian-sea-area',
     name: 'Caspian Sea',
     description: 'Surface area of the Caspian Sea',
     dimension: 'area',
@@ -1783,7 +1783,7 @@ export const areaMeasurables: Measurable[] = [
 
   // Seas and oceans
   {
-    id: 'mediterranean-sea',
+    id: 'mediterranean-sea-area',
     name: 'Mediterranean Sea',
     description: 'Area of the Mediterranean Sea',
     dimension: 'area',
@@ -1978,7 +1978,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'mars-surface',
+    id: 'mars-surface-area',
     name: 'Mars surface area',
     description: 'Total surface area of Mars',
     dimension: 'area',
@@ -1989,7 +1989,7 @@ export const areaMeasurables: Measurable[] = [
     accuracy: 10,
   },
   {
-    id: 'venus-surface',
+    id: 'venus-surface-area',
     name: 'Venus surface area',
     description: 'Total surface area of Venus',
     dimension: 'area',

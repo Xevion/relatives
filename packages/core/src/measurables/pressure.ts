@@ -64,7 +64,7 @@ export const pressureMeasurables: Measurable[] = [
     accuracy: 8,
   },
   {
-    id: 'mars-surface',
+    id: 'mars-surface-pressure',
     name: 'Mars surface',
     description: 'Atmospheric pressure on the surface of Mars',
     dimension: 'pressure',
@@ -454,7 +454,7 @@ export const pressureMeasurables: Measurable[] = [
 
   // Planetary atmospheres
   {
-    id: 'venus-surface',
+    id: 'venus-surface-pressure',
     name: 'Venus surface',
     description: 'Atmospheric pressure on the surface of Venus',
     dimension: 'pressure',
