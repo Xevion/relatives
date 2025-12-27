@@ -65,21 +65,76 @@
     return () => clearTimeout(debounceTimeout);
   });
 
+  interface NumberScale {
+    threshold: number;
+    name: string;
+    decimals: number;
+  }
+
+  const NUMBER_SCALES: NumberScale[] = [
+    { threshold: 1e100, name: 'googol', decimals: 0 },
+    { threshold: 1e63, name: 'vigintillion', decimals: 0 },
+    { threshold: 1e60, name: 'novemdecillion', decimals: 0 },
+    { threshold: 1e57, name: 'octodecillion', decimals: 0 },
+    { threshold: 1e54, name: 'septendecillion', decimals: 0 },
+    { threshold: 1e51, name: 'sexdecillion', decimals: 0 },
+    { threshold: 1e48, name: 'quindecillion', decimals: 0 },
+    { threshold: 1e45, name: 'quattuordecillion', decimals: 0 },
+    { threshold: 1e42, name: 'tredecillion', decimals: 1 },
+    { threshold: 1e39, name: 'duodecillion', decimals: 1 },
+    { threshold: 1e36, name: 'undecillion', decimals: 1 },
+    { threshold: 1e33, name: 'decillion', decimals: 1 },
+    { threshold: 1e30, name: 'nonillion', decimals: 1 },
+    { threshold: 1e27, name: 'octillion', decimals: 1 },
+    { threshold: 1e24, name: 'septillion', decimals: 1 },
+    { threshold: 1e21, name: 'sextillion', decimals: 1 },
+    { threshold: 1e18, name: 'quintillion', decimals: 1 },
+    { threshold: 1e15, name: 'quadrillion', decimals: 1 },
+    { threshold: 1e12, name: 'trillion', decimals: 1 },
+    { threshold: 1e9, name: 'billion', decimals: 1 },
+    { threshold: 1e6, name: 'million', decimals: 1 },
+    { threshold: 1e3, name: 'thousand', decimals: 1 },
+  ];
+
+  function formatLargeNumber(value: number, decimals: number = 1): string {
+    return value.toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals
+    });
+  }
+
+  function findScale(value: number): NumberScale | undefined {
+    return NUMBER_SCALES.find(scale => value >= scale.threshold);
+  }
+
   function formatRatio(ratio: number): string {
     if (ratio === 1) return 'exactly equal to';
+    
     if (ratio > 1) {
-      if (ratio >= 1000000) return `${(ratio / 1000000).toFixed(1)} million times`;
-      if (ratio >= 1000) return `${(ratio / 1000).toFixed(1)} thousand times`;
-      if (ratio >= 100) return `${ratio.toFixed(0)}x`;
-      if (ratio >= 10) return `${ratio.toFixed(1)}x`;
-      return `${ratio.toFixed(2)}x`;
+      const scale = findScale(ratio);
+      
+      if (scale) {
+        const scaled = ratio / scale.threshold;
+        return `${formatLargeNumber(scaled, scale.decimals)} ${scale.name} times`;
+      }
+      
+      // No named scale found - use multiplier notation
+      if (ratio >= 100) return `${formatLargeNumber(ratio, 0)}x`;
+      if (ratio >= 10) return `${formatLargeNumber(ratio, 1)}x`;
+      return `${formatLargeNumber(ratio, 2)}x`;
     } else {
       const inverse = 1 / ratio;
-      if (inverse >= 1000000) return `1/${(inverse / 1000000).toFixed(1)} millionth of`;
-      if (inverse >= 1000) return `1/${(inverse / 1000).toFixed(1)} thousandth of`;
-      if (inverse >= 100) return `1/${inverse.toFixed(0)}th of`;
-      if (inverse >= 10) return `1/${inverse.toFixed(1)}th of`;
-      return `${ratio.toFixed(2)}x (${inverse.toFixed(2)}x smaller)`;
+      const scale = findScale(inverse);
+      
+      if (scale) {
+        const scaled = inverse / scale.threshold;
+        return `1/${formatLargeNumber(scaled, scale.decimals)} ${scale.name}th of`;
+      }
+      
+      // No named scale found - use fractional notation
+      if (inverse >= 100) return `1/${formatLargeNumber(inverse, 0)}th of`;
+      if (inverse >= 10) return `1/${formatLargeNumber(inverse, 1)}th of`;
+      return `${formatLargeNumber(ratio, 2)}x (${formatLargeNumber(inverse, 2)}x smaller)`;
     }
   }
 
