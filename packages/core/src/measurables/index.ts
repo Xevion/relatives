@@ -5,6 +5,13 @@ import { timeMeasurables } from './time';
 import { volumeMeasurables } from './volume';
 import { areaMeasurables } from './area';
 import { velocityMeasurables } from './velocity';
+import { temperatureMeasurables } from './temperature';
+import { energyMeasurables } from './energy';
+import { powerMeasurables } from './power';
+import { dataMeasurables } from './data';
+import { pressureMeasurables } from './pressure';
+import { forceMeasurables } from './force';
+import { frequencyMeasurables } from './frequency';
 
 /**
  * All measurables organized by dimension
@@ -16,6 +23,13 @@ export const measurablesByDimension: Record<string, Measurable[]> = {
   volume: volumeMeasurables,
   area: areaMeasurables,
   velocity: velocityMeasurables,
+  temperature: temperatureMeasurables,
+  energy: energyMeasurables,
+  power: powerMeasurables,
+  data: dataMeasurables,
+  pressure: pressureMeasurables,
+  force: forceMeasurables,
+  frequency: frequencyMeasurables,
 };
 
 /**
@@ -57,4 +71,11 @@ export {
   volumeMeasurables,
   areaMeasurables,
   velocityMeasurables,
+  temperatureMeasurables,
+  energyMeasurables,
+  powerMeasurables,
+  dataMeasurables,
+  pressureMeasurables,
+  forceMeasurables,
+  frequencyMeasurables,
 };

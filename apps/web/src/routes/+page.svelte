@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { compare, dimensions, type ComparisonResponse } from '@relatives/core';
+  import { compare, dimensions, type ComparisonResponse, type Dimension, type Unit } from '@relatives/core';
   import { autoAnimate } from '@formkit/auto-animate';
 
   let value = $state(70);
@@ -139,7 +139,7 @@
   }
 
   function getUnitSymbol(unitId: string): string {
-    const unit = availableUnits.find((u) => u.id === unitId);
+    const unit = availableUnits.find((u: Unit) => u.id === unitId);
     return unit?.symbol ?? unitId;
   }
 </script>
@@ -171,7 +171,7 @@
           class="form-select dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
         >
           {#each Object.entries(dimensions) as [id, dim] (id)}
-            <option value={id}>{dim.name}</option>
+            <option value={id}>{(dim as Dimension).name}</option>
           {/each}
         </select>
       </label>

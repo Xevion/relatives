@@ -38,6 +38,7 @@ describe('ComparisonEngine', () => {
         value: 1,
         unit: 'kilometer',
         dimension: 'length',
+        limit: 50, // Increased to accommodate expanded dataset
       });
 
       // Query is 1 km = 1000 m

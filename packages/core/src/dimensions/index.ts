@@ -5,6 +5,13 @@ import { time } from './time';
 import { volume } from './volume';
 import { area } from './area';
 import { velocity } from './velocity';
+import { temperature } from './temperature';
+import { energy } from './energy';
+import { power } from './power';
+import { data } from './data';
+import { pressure } from './pressure';
+import { force } from './force';
+import { frequency } from './frequency';
 
 /**
  * All available dimensions
@@ -16,6 +23,13 @@ export const dimensions: Record<string, Dimension> = {
   volume,
   area,
   velocity,
+  temperature,
+  energy,
+  power,
+  data,
+  pressure,
+  force,
+  frequency,
 };
 
 /**
@@ -80,4 +94,4 @@ export function convert(value: number, fromUnitId: string, toUnitId: string): nu
   return baseValue / toResult.unit.toBase;
 }
 
-export { length, mass, time, volume, area, velocity };
+export { length, mass, time, volume, area, velocity, temperature, energy, power, data, pressure, force, frequency };
