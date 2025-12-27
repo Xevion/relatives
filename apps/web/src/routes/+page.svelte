@@ -5,13 +5,16 @@
   let value = $state(70);
   let selectedDimension = $state('length');
   let selectedUnit = $state('micrometer');
-  let excludeAmerican = $state(false);
-  let limit = $state(10);
 
   // Weight sliders
   let closenessWeight = $state(0.4);
   let relatabilityWeight = $state(0.35);
   let accuracyWeight = $state(0.25);
+
+  // Infinite scroll state
+  let displayCount = $state(10); // Initially show 10
+  let loadMoreTrigger: HTMLDivElement | null = $state(null);
+  let isLoadingMore = $state(false);
 
   // Get units for selected dimension
   let availableUnits = $derived(dimensions[selectedDimension]?.units ?? []);
@@ -28,21 +31,25 @@
   let error: string | null = $state(null);
   let searching = $state(false);
 
+  // Pagination
+  let allResults = $derived(results?.results ?? []);
+  let visibleResults = $derived(allResults.slice(0, displayCount));
+  let hasMoreResults = $derived(displayCount < allResults.length);
+
   function runComparison() {
     searching = true;
     error = null;
+    displayCount = 10; // Reset pagination on new search
     try {
       results = compare({
         value,
         unit: selectedUnit,
         dimension: selectedDimension,
-        filters: excludeAmerican ? { excludeTags: ['american'] } : undefined,
         weights: {
           closeness: closenessWeight,
           relatability: relatabilityWeight,
           accuracy: accuracyWeight,
         },
-        limit,
       });
     } catch (e) {
       error = e instanceof Error ? e.message : 'Unknown error';
@@ -56,13 +63,45 @@
   
   $effect(() => {
     // Track all input dependencies
-    value; selectedDimension; selectedUnit; excludeAmerican; limit;
+    value; selectedDimension; selectedUnit;
     closenessWeight; relatabilityWeight; accuracyWeight;
     
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => runComparison(), 100);
     
     return () => clearTimeout(debounceTimeout);
+  });
+
+  // Intersection observer for infinite scroll with delay
+  let loadMoreTimeout: ReturnType<typeof setTimeout> | undefined;
+
+  $effect(() => {
+    if (!loadMoreTrigger || !hasMoreResults) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !isLoadingMore) {
+          isLoadingMore = true;
+          
+          // Delay before loading (predictability)
+          loadMoreTimeout = setTimeout(() => {
+            displayCount += 10; // Load 10 more
+            isLoadingMore = false;
+          }, 500); // 500ms delay
+        }
+      },
+      { threshold: 0.1 } // Trigger when 10% visible
+    );
+
+    observer.observe(loadMoreTrigger);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(loadMoreTimeout);
+    };
   });
 
   interface NumberScale {
@@ -189,27 +228,7 @@
       </label>
     </div>
 
-    <div class="mt-4 flex flex-wrap items-center gap-4">
-      <label class="flex cursor-pointer items-center gap-2">
-        <input 
-          type="checkbox" 
-          bind:checked={excludeAmerican}
-          class="form-checkbox rounded text-blue-600 dark:bg-gray-800 dark:border-gray-700"
-        />
-        <span class="text-sm text-gray-700 dark:text-gray-300">Exclude American-specific references</span>
-      </label>
 
-      <label class="flex min-w-[120px] flex-col gap-1">
-        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Results limit</span>
-        <input 
-          type="number" 
-          bind:value={limit} 
-          min="1" 
-          max="50"
-          class="form-input dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-        />
-      </label>
-    </div>
 
     <div class="mt-6 border-t border-gray-200 pt-4 dark:border-gray-800">
       <h3 class="mb-3 text-sm font-medium text-gray-600 dark:text-gray-400">Scoring Weights</h3>
@@ -265,7 +284,7 @@
       </h2>
 
       <div class="flex flex-col gap-3" use:autoAnimate>
-        {#each results.results as result, i (result.measurable.id)}
+        {#each visibleResults as result, i (result.measurable.id)}
           <div class="flex gap-4 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-900">
             <div class="min-w-[2rem] text-xl font-bold text-gray-400 dark:text-gray-600">#{i + 1}</div>
             <div class="flex-1">
@@ -289,6 +308,25 @@
             </div>
           </div>
         {/each}
+
+        <!-- Infinite scroll trigger -->
+        {#if hasMoreResults}
+          <div bind:this={loadMoreTrigger} class="flex justify-center py-4">
+            {#if isLoadingMore}
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                Loading more results...
+              </div>
+            {:else}
+              <div class="text-sm text-gray-400 dark:text-gray-600">
+                Scroll for more
+              </div>
+            {/if}
+          </div>
+        {:else if allResults.length > 0}
+          <div class="py-4 text-center text-sm text-gray-400 dark:text-gray-600">
+            No more results (showing {allResults.length} total)
+          </div>
+        {/if}
       </div>
     </section>
   {/if}

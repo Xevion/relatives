@@ -81,6 +81,20 @@ export interface ScoringWeights {
 }
 
 /**
+ * Configuration for intelligent result cutoff
+ */
+export interface ResultCutoff {
+  /** Minimum absolute score to include (0-1). Default: 0.15 */
+  minScore?: number;
+  /** Minimum score relative to top result (0-1). Default: 0.2 */
+  minRelativeScore?: number;
+  /** Always show at least this many results. Default: 5 */
+  minResults?: number;
+  /** Never show more than this many results (safety). Default: 50 */
+  maxResults?: number;
+}
+
+/**
  * A query to find comparisons for a given quantity
  */
 export interface ComparisonQuery {
@@ -95,8 +109,8 @@ export interface ComparisonQuery {
   filters?: ComparisonFilters;
   /** Optional scoring weights */
   weights?: ScoringWeights;
-  /** Maximum number of results to return */
-  limit?: number;
+  /** Intelligent cutoff configuration (optional) */
+  cutoff?: ResultCutoff;
 }
 
 /**

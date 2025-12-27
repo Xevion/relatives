@@ -38,7 +38,6 @@ describe('ComparisonEngine', () => {
         value: 1,
         unit: 'kilometer',
         dimension: 'length',
-        limit: 50, // Increased to accommodate expanded dataset
       });
 
       // Query is 1 km = 1000 m
@@ -89,15 +88,18 @@ describe('ComparisonEngine', () => {
       }
     });
 
-    it('respects limit parameter', () => {
+    it('uses intelligent cutoff by default', () => {
       const result = compare({
         value: 1,
         unit: 'meter',
         dimension: 'length',
-        limit: 5,
       });
 
-      expect(result.results.length).toBeLessThanOrEqual(5);
+      // Should have at least minResults (5)
+      expect(result.results.length).toBeGreaterThanOrEqual(5);
+
+      // Should have at most maxResults (50)
+      expect(result.results.length).toBeLessThanOrEqual(50);
     });
 
     it('works with mass dimension', () => {
@@ -135,7 +137,6 @@ describe('ComparisonEngine', () => {
         value: 1,
         unit: 'meter',
         dimension: 'length',
-        limit: 20,
       });
 
       for (let i = 1; i < result.results.length; i++) {
@@ -172,7 +173,6 @@ describe('ComparisonEngine', () => {
         unit: 'kilometer',
         dimension: 'length',
         weights: { relatability: 1, closeness: 0, accuracy: 0 },
-        limit: 50,
       });
 
       // All top results should have high relatability
@@ -180,6 +180,95 @@ describe('ComparisonEngine', () => {
         expect(r.measurable.relatability).toBeGreaterThanOrEqual(8);
       }
     });
+  });
+});
+
+describe('ResultCutoff', () => {
+  it('applies default cutoff when no config provided', () => {
+    const result = compare({
+      value: 1,
+      unit: 'meter',
+      dimension: 'length',
+    });
+
+    // Should have at least minResults (5)
+    expect(result.results.length).toBeGreaterThanOrEqual(5);
+
+    // Should have at most maxResults (50)
+    expect(result.results.length).toBeLessThanOrEqual(50);
+
+    // All results should meet thresholds (except guaranteed minimum)
+    const topScore = result.results[0].compositeScore;
+    for (let i = 5; i < result.results.length; i++) {
+      const score = result.results[i].compositeScore;
+      const meetsAbsolute = score >= 0.15;
+      const meetsRelative = score >= topScore * 0.2;
+      expect(meetsAbsolute || meetsRelative).toBe(true);
+    }
+  });
+
+  it('respects custom minScore', () => {
+    const result = compare({
+      value: 1,
+      unit: 'meter',
+      dimension: 'length',
+      cutoff: { minScore: 0.5, minResults: 0, minRelativeScore: 0 },
+    });
+
+    // All results should have score >= 0.5
+    for (const r of result.results) {
+      expect(r.compositeScore).toBeGreaterThanOrEqual(0.5);
+    }
+  });
+
+  it('respects custom minRelativeScore', () => {
+    const result = compare({
+      value: 1,
+      unit: 'meter',
+      dimension: 'length',
+      cutoff: { minRelativeScore: 0.5, minScore: 0, minResults: 0 },
+    });
+
+    if (result.results.length > 0) {
+      const topScore = result.results[0].compositeScore;
+      for (const r of result.results) {
+        expect(r.compositeScore).toBeGreaterThanOrEqual(topScore * 0.5);
+      }
+    }
+  });
+
+  it('always includes minResults even with low scores', () => {
+    const result = compare({
+      value: 1e20, // Absurdly large value - will have poor matches
+      unit: 'meter',
+      dimension: 'length',
+      cutoff: { minResults: 10, minScore: 0.99, minRelativeScore: 0.99 }, // Impossible thresholds
+    });
+
+    // Should still return 10 results despite impossible thresholds
+    expect(result.results.length).toBe(10);
+  });
+
+  it('respects maxResults safety limit', () => {
+    const result = compare({
+      value: 1,
+      unit: 'meter',
+      dimension: 'length',
+      cutoff: { maxResults: 3, minScore: 0, minRelativeScore: 0 },
+    });
+
+    expect(result.results.length).toBeLessThanOrEqual(3);
+  });
+
+  it('respects custom maxResults in cutoff', () => {
+    const result = compare({
+      value: 1,
+      unit: 'meter',
+      dimension: 'length',
+      cutoff: { maxResults: 7, minScore: 0, minRelativeScore: 0 },
+    });
+
+    expect(result.results.length).toBe(7);
   });
 });
 

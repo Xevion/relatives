@@ -1,4 +1,10 @@
-import type { ComparisonQuery, ComparisonResponse, ComparisonResult, Measurable } from '@/types';
+import type {
+  ComparisonQuery,
+  ComparisonResponse,
+  ComparisonResult,
+  Measurable,
+  ResultCutoff,
+} from '@/types';
 import { getDimension, getUnitInDimension } from '@/dimensions';
 import { getMeasurablesByDimension } from '@/measurables';
 import { calculateClosenessScore, calculateCompositeScore } from '@/scoring';
@@ -11,7 +17,7 @@ export class ComparisonEngine {
    * Find comparisons for a given query
    */
   compare(query: ComparisonQuery): ComparisonResponse {
-    const { value, unit, dimension, filters, weights, limit = 10 } = query;
+    const { value, unit, dimension, filters, weights, cutoff } = query;
 
     // Validate dimension exists
     const dim = getDimension(dimension);
@@ -66,14 +72,74 @@ export class ComparisonEngine {
     // Sort by composite score (descending)
     results.sort((a, b) => b.compositeScore - a.compositeScore);
 
-    // Limit results
-    const limitedResults = results.slice(0, limit);
+    // Apply intelligent cutoff (hybrid strategy)
+    const filteredResults = this.applyCutoff(results, cutoff);
 
     return {
       query,
       queryValueInBaseUnits,
-      results: limitedResults,
+      results: filteredResults,
     };
+  }
+
+  /**
+   * Apply intelligent cutoff to results using hybrid strategy
+   * @param results - Sorted results (descending by compositeScore)
+   * @param cutoff - Cutoff configuration
+   */
+  private applyCutoff(results: ComparisonResult[], cutoff?: ResultCutoff): ComparisonResult[] {
+    // Default cutoff values (hybrid strategy)
+    // Use explicit undefined checks to allow 0 values
+    const config = {
+      minScore: cutoff?.minScore !== undefined ? cutoff.minScore : 0.15,
+      minRelativeScore: cutoff?.minRelativeScore !== undefined ? cutoff.minRelativeScore : 0.2,
+      minResults: cutoff?.minResults !== undefined ? cutoff.minResults : 5,
+      maxResults: cutoff?.maxResults !== undefined ? cutoff.maxResults : 50,
+    };
+
+    if (results.length === 0) return [];
+
+    // Ensure we return at least minResults (but not more than available)
+    const guaranteedCount = Math.min(config.minResults, results.length);
+
+    const topScore = results[0]?.compositeScore ?? 0;
+
+    const filtered: ComparisonResult[] = [];
+
+    for (let i = 0; i < results.length; i++) {
+      // Stop if we've hit maxResults
+      if (filtered.length >= config.maxResults) {
+        break;
+      }
+
+      const result = results[i];
+
+      // Always include minimum results (even if they're bad)
+      if (i < guaranteedCount) {
+        filtered.push(result);
+        continue;
+      }
+
+      // Include if meets absolute threshold
+      if (result.compositeScore >= config.minScore) {
+        filtered.push(result);
+        continue;
+      }
+
+      // Include if meets relative threshold (% of top score)
+      // Skip this check if minRelativeScore is 0 (otherwise all results pass since score >= 0)
+      if (
+        config.minRelativeScore > 0 &&
+        result.compositeScore >= topScore * config.minRelativeScore
+      ) {
+        filtered.push(result);
+        continue;
+      }
+
+      // Otherwise skip this result
+    }
+
+    return filtered;
   }
 
   /**
