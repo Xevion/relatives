@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@import "overlayscrollbars/overlayscrollbars.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* OverlayScrollbars styling */
+.os-scrollbar-handle {
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .os-scrollbar-handle {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.os-scrollbar-handle:hover {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .os-scrollbar-handle:hover {
+  background: rgba(255, 255, 255, 0.5) !important;
+}

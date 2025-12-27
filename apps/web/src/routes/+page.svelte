@@ -1,5 +1,6 @@
 <script lang="ts">
   import { compare, dimensions, type ComparisonResponse } from '@relatives/core';
+  import { autoAnimate } from '@formkit/auto-animate';
 
   let value = $state(70);
   let selectedDimension = $state('length');
@@ -25,8 +26,10 @@
 
   let results: ComparisonResponse | null = $state(null);
   let error: string | null = $state(null);
+  let searching = $state(false);
 
   function runComparison() {
+    searching = true;
     error = null;
     try {
       results = compare({
@@ -45,7 +48,22 @@
       error = e instanceof Error ? e.message : 'Unknown error';
       results = null;
     }
+    setTimeout(() => searching = false, 50);
   }
+
+  // Debounced reactive search on any input change
+  let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
+  
+  $effect(() => {
+    // Track all input dependencies
+    value; selectedDimension; selectedUnit; excludeAmerican; limit;
+    closenessWeight; relatabilityWeight; accuracyWeight;
+    
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => runComparison(), 100);
+    
+    return () => clearTimeout(debounceTimeout);
+  });
 
   function formatRatio(ratio: number): string {
     if (ratio === 1) return 'exactly equal to';
@@ -75,29 +93,40 @@
   <title>Relatives - Quantity Comparison Engine</title>
 </svelte:head>
 
-<main>
-  <h1>Relatives</h1>
-  <p class="subtitle">Find relatable comparisons for any quantity</p>
+<main class="mx-auto max-w-3xl px-8 py-8">
+  <h1 class="m-0 text-4xl font-normal text-gray-950 dark:text-gray-50">Relatives</h1>
+  <p class="mb-8 mt-2 text-gray-600 dark:text-gray-400">Find relatable comparisons for any quantity</p>
 
-  <section class="input-section">
-    <div class="input-row">
-      <label>
-        Value
-        <input type="number" bind:value step="any" />
+  <section class="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-900">
+    <div class="flex flex-wrap gap-4">
+      <label class="flex min-w-[150px] flex-1 flex-col gap-1">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Value</span>
+        <input 
+          type="number" 
+          bind:value 
+          step="any" 
+          class="form-input dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" 
+        />
       </label>
 
-      <label>
-        Dimension
-        <select bind:value={selectedDimension}>
+      <label class="flex min-w-[150px] flex-1 flex-col gap-1">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Dimension</span>
+        <select 
+          bind:value={selectedDimension}
+          class="form-select dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+        >
           {#each Object.entries(dimensions) as [id, dim] (id)}
             <option value={id}>{dim.name}</option>
           {/each}
         </select>
       </label>
 
-      <label>
-        Unit
-        <select bind:value={selectedUnit}>
+      <label class="flex min-w-[150px] flex-1 flex-col gap-1">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Unit</span>
+        <select 
+          bind:value={selectedUnit}
+          class="form-select dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+        >
           {#each availableUnits as unit (unit.id)}
             <option value={unit.id}>{unit.symbol} ({unit.id})</option>
           {/each}
@@ -105,73 +134,102 @@
       </label>
     </div>
 
-    <div class="options-row">
-      <label class="checkbox">
-        <input type="checkbox" bind:checked={excludeAmerican} />
-        Exclude American-specific references
+    <div class="mt-4 flex flex-wrap items-center gap-4">
+      <label class="flex cursor-pointer items-center gap-2">
+        <input 
+          type="checkbox" 
+          bind:checked={excludeAmerican}
+          class="form-checkbox rounded text-blue-600 dark:bg-gray-800 dark:border-gray-700"
+        />
+        <span class="text-sm text-gray-700 dark:text-gray-300">Exclude American-specific references</span>
       </label>
 
-      <label>
-        Results limit
-        <input type="number" bind:value={limit} min="1" max="50" />
+      <label class="flex min-w-[120px] flex-col gap-1">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Results limit</span>
+        <input 
+          type="number" 
+          bind:value={limit} 
+          min="1" 
+          max="50"
+          class="form-input dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+        />
       </label>
     </div>
 
-    <div class="weights-section">
-      <h3>Scoring Weights</h3>
-      <div class="weights-row">
-        <label>
-          Closeness ({(closenessWeight * 100).toFixed(0)}%)
-          <input type="range" bind:value={closenessWeight} min="0" max="1" step="0.05" />
+    <div class="mt-6 border-t border-gray-200 pt-4 dark:border-gray-800">
+      <h3 class="mb-3 text-sm font-medium text-gray-600 dark:text-gray-400">Scoring Weights</h3>
+      <div class="flex flex-wrap gap-4">
+        <label class="flex min-w-[120px] flex-1 flex-col gap-1 text-sm">
+          <span class="text-gray-700 dark:text-gray-300">Closeness ({(closenessWeight * 100).toFixed(0)}%)</span>
+          <input 
+            type="range" 
+            bind:value={closenessWeight} 
+            min="0" 
+            max="1" 
+            step="0.05"
+            class="form-range"
+          />
         </label>
-        <label>
-          Relatability ({(relatabilityWeight * 100).toFixed(0)}%)
-          <input type="range" bind:value={relatabilityWeight} min="0" max="1" step="0.05" />
+        <label class="flex min-w-[120px] flex-1 flex-col gap-1 text-sm">
+          <span class="text-gray-700 dark:text-gray-300">Relatability ({(relatabilityWeight * 100).toFixed(0)}%)</span>
+          <input 
+            type="range" 
+            bind:value={relatabilityWeight} 
+            min="0" 
+            max="1" 
+            step="0.05"
+            class="form-range"
+          />
         </label>
-        <label>
-          Accuracy ({(accuracyWeight * 100).toFixed(0)}%)
-          <input type="range" bind:value={accuracyWeight} min="0" max="1" step="0.05" />
+        <label class="flex min-w-[120px] flex-1 flex-col gap-1 text-sm">
+          <span class="text-gray-700 dark:text-gray-300">Accuracy ({(accuracyWeight * 100).toFixed(0)}%)</span>
+          <input 
+            type="range" 
+            bind:value={accuracyWeight} 
+            min="0" 
+            max="1" 
+            step="0.05"
+            class="form-range"
+          />
         </label>
       </div>
     </div>
-
-    <button onclick={runComparison}>Find Comparisons</button>
   </section>
 
   {#if error}
-    <section class="error">
-      <p>{error}</p>
+    <section class="mt-4 rounded-lg bg-red-50 p-4 text-red-800 dark:bg-red-950 dark:text-red-200">
+      <p class="m-0">{error}</p>
     </section>
   {/if}
 
   {#if results}
-    <section class="results">
-      <h2>
+    <section class="mt-8">
+      <h2 class="mb-4 mt-0 text-2xl font-semibold text-gray-950 dark:text-gray-50">
         Comparisons for {value}
         {getUnitSymbol(selectedUnit)}
       </h2>
 
-      <div class="results-list">
+      <div class="flex flex-col gap-3" use:autoAnimate>
         {#each results.results as result, i (result.measurable.id)}
-          <div class="result-card">
-            <div class="result-rank">#{i + 1}</div>
-            <div class="result-content">
-              <h3>{result.measurable.name}</h3>
+          <div class="flex gap-4 rounded-lg bg-white p-4 shadow-sm dark:bg-gray-900">
+            <div class="min-w-[2rem] text-xl font-bold text-gray-400 dark:text-gray-600">#{i + 1}</div>
+            <div class="flex-1">
+              <h3 class="m-0 text-lg font-semibold text-gray-950 dark:text-gray-50">{result.measurable.name}</h3>
               {#if result.measurable.description}
-                <p class="description">{result.measurable.description}</p>
+                <p class="my-1 text-sm text-gray-600 dark:text-gray-400">{result.measurable.description}</p>
               {/if}
-              <p class="comparison">
-                <strong>{formatRatio(result.ratio)}</strong> a {result.measurable.name.toLowerCase()}
+              <p class="my-2 text-base text-gray-900 dark:text-gray-100">
+                <strong class="font-semibold">{formatRatio(result.ratio)}</strong> a {result.measurable.name.toLowerCase()}
               </p>
-              <div class="meta">
-                <span class="score" title="Composite score">
+              <div class="mt-2 flex flex-wrap items-center gap-4 text-xs">
+                <span class="font-medium text-blue-600 dark:text-blue-400" title="Composite score">
                   Score: {(result.compositeScore * 100).toFixed(1)}%
                 </span>
-                <span class="tags">
+                <div class="flex flex-wrap gap-1">
                   {#each result.measurable.tags as tag (tag)}
-                    <span class="tag">{tag}</span>
+                    <span class="rounded bg-gray-200 px-2 py-0.5 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-400">{tag}</span>
                   {/each}
-                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -180,205 +238,3 @@
     </section>
   {/if}
 </main>
-
-<style>
-  :global(body) {
-    font-family:
-      system-ui,
-      -apple-system,
-      sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f5f5f5;
-    color: #333;
-  }
-
-  main {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: 2.5rem;
-    color: #222;
-  }
-
-  .subtitle {
-    color: #666;
-    margin-top: 0.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .input-section {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .input-row {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .input-row label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    flex: 1;
-    min-width: 150px;
-  }
-
-  input[type='number'],
-  select {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-
-  .options-row {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .checkbox {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .weights-section {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-  }
-
-  .weights-section h3 {
-    margin: 0 0 0.75rem 0;
-    font-size: 0.9rem;
-    color: #666;
-  }
-
-  .weights-row {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .weights-row label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    flex: 1;
-    min-width: 120px;
-    font-size: 0.85rem;
-  }
-
-  button {
-    margin-top: 1.5rem;
-    padding: 0.75rem 1.5rem;
-    background: #0066cc;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #0055aa;
-  }
-
-  .error {
-    background: #ffebee;
-    color: #c62828;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-top: 1rem;
-  }
-
-  .results {
-    margin-top: 2rem;
-  }
-
-  .results h2 {
-    margin: 0 0 1rem 0;
-  }
-
-  .results-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .result-card {
-    display: flex;
-    gap: 1rem;
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .result-rank {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #999;
-    min-width: 2rem;
-  }
-
-  .result-content {
-    flex: 1;
-  }
-
-  .result-content h3 {
-    margin: 0;
-    font-size: 1.1rem;
-  }
-
-  .description {
-    margin: 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-  }
-
-  .comparison {
-    margin: 0.5rem 0;
-    font-size: 1rem;
-  }
-
-  .meta {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  .score {
-    color: #0066cc;
-    font-weight: 500;
-  }
-
-  .tags {
-    display: flex;
-    gap: 0.25rem;
-    flex-wrap: wrap;
-  }
-
-  .tag {
-    background: #e0e0e0;
-    padding: 0.1rem 0.4rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    color: #666;
-  }
-</style>
