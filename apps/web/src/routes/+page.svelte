@@ -1,10 +1,17 @@
 <script lang="ts">
   import { compare, dimensions, type ComparisonResponse, type Dimension, type Unit } from '@relatives/core';
   import { autoAnimate } from '@formkit/auto-animate';
+  import { NumericInput } from '$lib/components/ui/numeric-input';
+  import { Label } from '$lib/components/ui/label';
+  import { Slider } from '$lib/components/ui/slider';
 
   let value = $state(70);
   let selectedDimension = $state('length');
   let selectedUnit = $state('micrometer');
+
+  // Element refs for keyboard shortcuts
+  let dimensionSelectRef: HTMLSelectElement | null = $state(null);
+  let unitSelectRef: HTMLSelectElement | null = $state(null);
 
   // Weight sliders
   let closenessWeight = $state(0.4);
@@ -181,11 +188,27 @@
     const unit = availableUnits.find((u: Unit) => u.id === unitId);
     return unit?.symbol ?? unitId;
   }
+
+  // Global keyboard shortcuts
+  function handleKeyboard(e: KeyboardEvent) {
+    // Ctrl/Cmd + K to focus dimension selector
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      dimensionSelectRef?.focus();
+    }
+    // Ctrl/Cmd + U to focus unit selector
+    if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+      e.preventDefault();
+      unitSelectRef?.focus();
+    }
+  }
 </script>
 
 <svelte:head>
   <title>Relatives - Quantity Comparison Engine</title>
 </svelte:head>
+
+<svelte:window onkeydown={handleKeyboard} />
 
 <main class="mx-auto max-w-3xl px-8 py-8">
   <h1 class="m-0 text-4xl font-normal text-gray-950 dark:text-gray-50">Relatives</h1>
@@ -193,39 +216,39 @@
 
   <section class="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-900">
     <div class="flex flex-wrap gap-4">
-      <label class="flex min-w-[150px] flex-1 flex-col gap-1">
-        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Value</span>
-        <input 
-          type="number" 
-          bind:value 
-          step="any" 
-          class="form-input dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" 
+      <div class="flex min-w-[150px] flex-1 flex-col gap-1">
+        <Label class="text-sm font-medium text-gray-700 dark:text-gray-300">Value</Label>
+        <NumericInput 
+          bind:value
+          placeholder="Enter value (e.g., 1e6, 5k, 2^10)"
         />
-      </label>
+      </div>
 
-      <label class="flex min-w-[150px] flex-1 flex-col gap-1">
-        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Dimension</span>
+      <div class="flex min-w-[150px] flex-1 flex-col gap-1">
+        <Label class="text-sm font-medium text-gray-700 dark:text-gray-300">Dimension <span class="text-xs text-gray-500">(Ctrl+K)</span></Label>
         <select 
+          bind:this={dimensionSelectRef}
           bind:value={selectedDimension}
-          class="form-select dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+          class="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:border-gray-700"
         >
           {#each Object.entries(dimensions) as [id, dim] (id)}
             <option value={id}>{(dim as Dimension).name}</option>
           {/each}
         </select>
-      </label>
+      </div>
 
-      <label class="flex min-w-[150px] flex-1 flex-col gap-1">
-        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Unit</span>
+      <div class="flex min-w-[150px] flex-1 flex-col gap-1">
+        <Label class="text-sm font-medium text-gray-700 dark:text-gray-300">Unit <span class="text-xs text-gray-500">(Ctrl+U)</span></Label>
         <select 
+          bind:this={unitSelectRef}
           bind:value={selectedUnit}
-          class="form-select dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+          class="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:border-gray-700"
         >
           {#each availableUnits as unit (unit.id)}
             <option value={unit.id}>{unit.symbol} ({unit.id})</option>
           {/each}
         </select>
-      </label>
+      </div>
     </div>
 
 
@@ -233,39 +256,36 @@
     <div class="mt-6 border-t border-gray-200 pt-4 dark:border-gray-800">
       <h3 class="mb-3 text-sm font-medium text-gray-600 dark:text-gray-400">Scoring Weights</h3>
       <div class="flex flex-wrap gap-4">
-        <label class="flex min-w-[120px] flex-1 flex-col gap-1 text-sm">
-          <span class="text-gray-700 dark:text-gray-300">Closeness ({(closenessWeight * 100).toFixed(0)}%)</span>
-          <input 
-            type="range" 
+        <div class="flex min-w-[120px] flex-1 flex-col gap-2 text-sm">
+          <Label class="text-gray-700 dark:text-gray-300">Closeness ({(closenessWeight * 100).toFixed(0)}%)</Label>
+          <Slider 
+            type="single"
             bind:value={closenessWeight} 
-            min="0" 
-            max="1" 
-            step="0.05"
-            class="form-range"
+            min={0} 
+            max={1} 
+            step={0.05}
           />
-        </label>
-        <label class="flex min-w-[120px] flex-1 flex-col gap-1 text-sm">
-          <span class="text-gray-700 dark:text-gray-300">Relatability ({(relatabilityWeight * 100).toFixed(0)}%)</span>
-          <input 
-            type="range" 
+        </div>
+        <div class="flex min-w-[120px] flex-1 flex-col gap-2 text-sm">
+          <Label class="text-gray-700 dark:text-gray-300">Relatability ({(relatabilityWeight * 100).toFixed(0)}%)</Label>
+          <Slider 
+            type="single"
             bind:value={relatabilityWeight} 
-            min="0" 
-            max="1" 
-            step="0.05"
-            class="form-range"
+            min={0} 
+            max={1} 
+            step={0.05}
           />
-        </label>
-        <label class="flex min-w-[120px] flex-1 flex-col gap-1 text-sm">
-          <span class="text-gray-700 dark:text-gray-300">Accuracy ({(accuracyWeight * 100).toFixed(0)}%)</span>
-          <input 
-            type="range" 
+        </div>
+        <div class="flex min-w-[120px] flex-1 flex-col gap-2 text-sm">
+          <Label class="text-gray-700 dark:text-gray-300">Accuracy ({(accuracyWeight * 100).toFixed(0)}%)</Label>
+          <Slider 
+            type="single"
             bind:value={accuracyWeight} 
-            min="0" 
-            max="1" 
-            step="0.05"
-            class="form-range"
+            min={0} 
+            max={1} 
+            step={0.05}
           />
-        </label>
+        </div>
       </div>
     </div>
   </section>
