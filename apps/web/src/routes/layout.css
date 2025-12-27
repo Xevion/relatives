@@ -119,3 +119,49 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Optimized theme transition using view-transition API when available */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.3s;
+  }
+}
+
+/* Fallback: CSS variables transition only */
+@supports not (view-transition-name: none) {
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Optimized theme transition - only on root element */
+:root {
+  color-scheme: light dark;
+}
+
+html {
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+/* Allow theme transitions only on elements that need it */
+body,
+main,
+section,
+div,
+button,
+input,
+select,
+svg {
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    fill 300ms ease;
+}
